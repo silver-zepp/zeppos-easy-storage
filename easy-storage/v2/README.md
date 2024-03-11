@@ -52,6 +52,7 @@ console.log(Storage.ReadFile("log.txt"));
 ```
 
 # 📝 EasyStorage API Reference
+
 ## 📍 EasyStorage (default class) <a id="easystorage"></a>
 #### Description
 `EasyStorage` offers lightweight, JSON storage solution designed for managing simple data structures efficiently. Ideal for small-scale applications or temporary data holding, it automates the persistence of changes to ensure data integrity. Your data is permanently stored on the device and will be restored next time the app is open. The whole database remains in RAM and filesystem.
