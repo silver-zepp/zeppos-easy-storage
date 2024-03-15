@@ -1,0 +1,75 @@
+{
+  "configVersion": "v2",
+  "app": {
+    "appId": 22501,
+    "appName": "EasyStorage",
+    "appType": "app",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    },
+    "icon": "icon.png",
+    "vender": "zepp",
+    "description": "EasyStorage Test App."
+  },
+  "permissions": [
+    "data:os.device.info",
+    "device:os.local_storage",
+    "data:user.hd.calorie"
+  ],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "2.0.0",
+      "target": "2.0.0",
+      "minVersion": "2.0.0"
+    }
+  },
+  "targets": {
+    "bip-5": {
+      "module": {
+        "page": {
+          "pages": [
+            "test-pages/easy-storage"
+          ]
+        }
+      },
+      "platforms": [
+        {
+          "name": "Bip-5",
+          "deviceSource": 8454401
+        }
+      ],
+      "designWidth": 320
+    },
+    "480x480-amazfit-balance": {
+      "module": {
+        "page": {
+          "pages": [
+            "test-pages/easy-storage"
+          ]
+        }
+      },
+      "platforms": [
+        {
+          "name": "Monaco",
+          "deviceSource": 8519936
+        },
+        {
+          "name": "MonacoWN",
+          "deviceSource": 8519937
+        },
+        {
+          "name": "MonacoW",
+          "deviceSource": 8519939
+        }
+      ],
+      "designWidth": 480
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "appName": "EasyStorage"
+    }
+  },
+  "defaultLanguage": "en-US"
+}

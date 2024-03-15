@@ -2,7 +2,7 @@
   "configVersion": "v2",
   "app": {
     "appId": 22501,
-    "appName": "Empty",
+    "appName": "EasyStorage",
     "appType": "app",
     "version": {
       "code": 1,
@@ -10,7 +10,7 @@
     },
     "icon": "icon.png",
     "vender": "zepp",
-    "description": "empty application"
+    "description": "EasyStorage Test App."
   },
   "permissions": [
     "data:os.device.info",
@@ -25,11 +25,27 @@
     }
   },
   "targets": {
+    "bip-5": {
+      "module": {
+        "page": {
+          "pages": [
+            "test-pages/easy-flash-storage"
+          ]
+        }
+      },
+      "platforms": [
+        {
+          "name": "Bip-5",
+          "deviceSource": 8454401
+        }
+      ],
+      "designWidth": 320
+    },
     "480x480-amazfit-balance": {
       "module": {
         "page": {
           "pages": [
-            "page/index"
+            "test-pages/easy-flash-storage"
           ]
         }
       },
@@ -52,7 +68,7 @@
   },
   "i18n": {
     "en-US": {
-      "appName": "Empty"
+      "appName": "EasyStorage"
     }
   },
   "defaultLanguage": "en-US"

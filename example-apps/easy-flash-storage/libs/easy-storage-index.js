@@ -139,22 +139,22 @@ class EasyStorage {
 	 * @examples
 	 * ```js
 	 * // example: get all storage keys as an object
-	 * const keys = storage.getAllKeys();
+	 * const snapshot = storage.getStorageSnapshot();
 	 * console.log(JSON.stringify(keys));
 	 *
 	 * // example: get all storage keys as a string
-	 * console.log(storage.getAllKeys(true));
+	 * console.log(storage.getStorageSnapshot(true));
 	 * ```
 	 */
-	getAllKeys(stringify = false) { // @upd 1.3.1
+	getStorageSnapshot(stringify = false) { // @upd 1.4.1
 		return stringify ? JSON.stringify(this.#content_obj) : this.#content_obj;
 	}
 
 	/**
-	 * @deprecated This method is deprecated and will be removed in the future. Please use getAllKeys instead.
+	 * @deprecated This method is deprecated and will be removed in the future. Please use getStorageSnapshot instead.
 	 */
-	getContents(stringify = false) {
-		console.log(ERR_DEPRECATED, "Please use getAllKeys instead.");
+	getAllKeys(stringify = false) {
+		console.log(ERR_DEPRECATED, "Please use getStorageSnapshot instead.");
 		return stringify ? JSON.stringify(this.#content_obj) : this.#content_obj;
 	}
 
@@ -204,20 +204,28 @@ export class EasyFlashStorage { // @add 1.4.0
     #directory;
 	#index = {};
     #cb_save_index_debounced;
+	#use_index; // @add 1.X.X
+	#debounce_delay = 1000;
 
 	/**
-	 * Initializes the EasyFlashStorage with a specified directory.
+	 * Initializes the EasyFlashStorage with a specified directory and an option to use an in-memory index.
 	 * @param {string} [directory="easy_flash_storage"] - The directory to use for storage.
+	 * @param {boolean} [use_index=true] - Determines whether to use an in-memory index for managing keys.
 	 * @example
-	 * ```js
+	 * // example: use an in-memory index (default)
 	 * const storage = new EasyFlashStorage('my_custom_directory');
-	 * ```
+	 * // example: direct disk access without using an in-memory index
+	 * const storage = new EasyFlashStorage('my_custom_directory', false);
 	 */
-    constructor(directory = "easy_flash_storage") {
+    constructor(directory = "easy_flash_storage",  use_index = true) {
         this.#directory = directory;
+		this.#use_index = use_index;
         mkdirSync({ path: this.#directory });
-		this.#cb_save_index_debounced = this.#debounce(this.#saveIndex.bind(this), 1000);
-        this.#loadIndex();
+		
+		if (this.#use_index){
+			this.#cb_save_index_debounced = this.#debounce(this.#saveIndex.bind(this), this.#debounce_delay);
+			this.#loadIndex();
+		}
     }
 
 	/**
@@ -233,9 +241,11 @@ export class EasyFlashStorage { // @add 1.4.0
 		const data = JSON.stringify(value);
 		// the data is stored as an arraybuf
 		writeFile(`${this.#directory}/${key}`, data);
-		// readdirSync workaround
-		this.#index[key] = true; // mark key as present
-        this.#cb_save_index_debounced(); // debounced save
+		
+		if (this.#use_index){
+			this.#index[key] = true; // mark key as present
+			this.#cb_save_index_debounced(); // debounced save
+		}
 	}
 
 	/**
@@ -247,18 +257,36 @@ export class EasyFlashStorage { // @add 1.4.0
 	 * console.log(storage.getKey('user')); // outputs the user object or `undefined`
 	 * ```
 	 */
-	getKey(key) {
-		if (this.hasKey(key)) { // this.#index[key] <- not a robust approach
-			const file_content = readFile(`${this.#directory}/${key}`);
+	getKey(key) { // @upd 1.X.X
+		let file_exists = this.hasKey(key); // check if the file exists on disk 
+		if (this.#use_index) {
+			if (file_exists && !(key in this.#index)) {
+				// the file exists, but it's not in the index. Add it.
+				this.#index[key] = true;
+				this.#cb_save_index_debounced(); // update the index file asynchronously
+			}
+	
+			if (key in this.#index) {
+				// retrieve the value from the file
+				const file_content = readFile(`${this.#directory}/${key}`);
+				try {
+					return JSON.parse(file_content);
+				} catch (error) {
+					debugLog(1, "Error parsing JSON from file:", error);
+					return undefined;
+				}
+			}
+		} else if (!this.#use_index && file_exists) {
+			// if not using index and the file exists, retrieve the value
 			try {
-				return JSON.parse(file_content); // directly parse the string content
+				const file_content = readFile(`${this.#directory}/${key}`);
+				return JSON.parse(file_content);
 			} catch (error) {
-				debugLog(1, "Error parsing JSON from file:", error);
+				debugLog(1, "Error accessing or parsing file:", error);
 				return undefined;
 			}
-		} else {
-			return undefined;
 		}
+		return undefined;
 	}
 
 	/**
@@ -272,9 +300,11 @@ export class EasyFlashStorage { // @add 1.4.0
     removeKey(key) {
         if (this.hasKey(key)) {
             removeFile(`${this.#directory}/${key}`);
-			// readdirSync workaround
-			delete this.#index[key]; // remove key from index
-            this.#cb_save_index_debounced(); // debounced save
+			
+			if (this.#use_index){
+				delete this.#index[key]; // remove key from index
+				this.#cb_save_index_debounced(); // debounced save
+			}
         }
     }
 
@@ -306,8 +336,12 @@ export class EasyFlashStorage { // @add 1.4.0
 	 * ```
 	 */
 	isEmpty() {
-        let keys = this.getAllKeys();
-        return keys.length === 0;
+        if (this.#use_index) {
+            return Object.keys(this.#index).length === 0;
+        } else {
+            const keys = readdirSync({ path: this.#directory });
+            return keys.length === 0 || (keys.length === 1 && keys.includes('index'));
+        }
     }
 
 	/**
@@ -319,10 +353,16 @@ export class EasyFlashStorage { // @add 1.4.0
 	 * ```
 	 */
     count() {
-        let keys = this.getAllKeys();
-        return keys.length;
+		if (this.#use_index) {
+            return Object.keys(this.#index).length; // @upd 1.X.X exclude from index
+        } else {
+            const keys = readdirSync({ path: this.#directory });
+            // ignore index file if it's stil thre
+            return keys.includes('index') ? keys.length - 1 : keys.length;
+        }
     }
 
+	// Note: the overhead of each file is 2 bytes. 6 bytes files = 8 bytes.
 	/**
 	 * Calculates the size of the data associated with a specific key, or returns 0 if the key does not exist.
 	 * @param {string} key - The key to calculate the size for.
@@ -360,24 +400,27 @@ export class EasyFlashStorage { // @add 1.4.0
 	 * console.log(storage.size('KB'));
 	 * ```
 	 */
-    size(unit = 'B') {
-		let keys = this.getAllKeys(); // should always return an array
-		let ttl_size = 0;
-	
-		for (let key of keys) {
-			const stat = statSync({ path: this.#directory + '/' + key });
-			if (stat) {
-				ttl_size += stat.size;
-			}
-		}
-	
-		return this.#convertSize(ttl_size, unit);
-	}
+	size(unit = 'B') {
+        let ttl_size = 0;
+        if (this.#use_index) {
+            const keys = Object.keys(this.#index);
+            keys.forEach(key => {
+                const stat = statSync({ path: `${this.#directory}/${key}` });
+                if (stat) ttl_size += stat.size;
+            });
+        } else {
+            const keys = readdirSync({ path: this.#directory });
+            keys.forEach(key => {
+                if (key === 'index') return; // skip index file
+                const stat = statSync({ path: `${this.#directory}/${key}` });
+                if (stat) ttl_size += stat.size;
+            });
+        }
+        return this.#convertSize(ttl_size, unit);
+    }
 
 	// warning (!) this call might be expensive if you have multiple big files in your storage
 	// (!) for now this has zero performace hits while using an index approach
-	// TODO: readdirSync is BUGGED, going with an index approach. TOBE: fixed
-	// keys = readdirSync({ path: this.#directory });
 	/**
 	 * Retrieves all keys from the storage, optionally stringified.
 	 * @param {boolean} [stringify=false] - If `true`, returns the keys as a JSON string; otherwise, returns an array of keys.
@@ -394,9 +437,70 @@ export class EasyFlashStorage { // @add 1.4.0
 	 * ```
 	 */
 	getAllKeys(stringify = false) {
-        const keys = Object.keys(this.#index);
+        let keys;
+        if (this.#use_index) {
+            keys = Object.keys(this.#index);
+        } else {
+            keys = this.#readdirExcludingIndex();
+        }
         return stringify ? JSON.stringify(keys) : keys;
     }
+
+	/**
+	 * Retrieves all values from the storage, optionally stringified.
+	 * @param {boolean} [stringify=false] - If `true`, returns the values as a JSON string; otherwise, returns an array of values.
+	 * @returns {string|array} The values in the storage as a JSON string if `stringify` is true, or as an array if `stringify` is false.
+	 * @example
+	 * ```js
+	 * // example: get all storage values as an array
+	 * const values = storage.getAllValues();
+	 * console.log(values);
+	 * 
+	 * // example: get all storage values as a string
+	 * const str_values = storage.getAllValues(true);
+	 * console.log(str_values);
+	 * ```
+	 */
+	getAllValues(stringify = false) { // @add 1.X.X
+        let values = [];
+        if (this.#use_index) {
+            values = Object.keys(this.#index).map(key => this.getKey(key));
+        } else {
+            const keys = this.#readdirExcludingIndex();
+            values = keys.map(key => this.getKey(key));
+        }
+        values = values.filter(value => value !== undefined); // Filter out any undefined values due to read or parse errors
+        return stringify ? JSON.stringify(values) : values;
+    }
+
+	/**
+	 * Retrieves all key-value pairs from the storage, optionally stringified.
+	 * @param {boolean} [stringify=false] - If `true`, returns the storage contents as a JSON string; otherwise, returns an object.
+	 * @returns {string|object} The storage contents as a JSON string if `stringify` is true, or as an object if `stringify` is false.
+	 * @example
+	 * ```js
+	 * // example: get all storage contents as an object
+	 * const contents = storage.getStorageSnapshot();
+	 * console.log(contents);
+	 * 
+	 * // example: get all storage contents as a JSON string
+	 * const str_contents = storage.getStorageSnapshot(true);
+	 * console.log(str_contents);
+	 * ```
+	 */
+	getStorageSnapshot(stringify = false) { // @add 1.X.X
+		const contents = Object.keys(this.#index).reduce((acc, key) => {
+			const file_content = readFile(`${this.#directory}/${key}`);
+			try {
+				acc[key] = JSON.parse(file_content);
+			} catch (error) {
+				debugLog(1, `Error parsing JSON from file for key ${key}:`, error);
+			}
+			return acc;
+		}, {});
+		return stringify ? JSON.stringify(contents) : contents;
+	}
+
 
 	/**
 	 * Removes all keys and their associated values from the storage.
@@ -450,6 +554,10 @@ export class EasyFlashStorage { // @add 1.4.0
     #saveIndex() {
 		writeFile(`${this.#directory}/index`, JSON.stringify(this.#index));
     }
+
+	#readdirExcludingIndex(){
+		return readdirSync({ path: this.#directory }).filter(key => key !== 'index');
+	}
 
 	#debounce(func, wait) {
         let timeout;
@@ -532,6 +640,10 @@ export class EasyTempStorage {
         const keys = Object.keys(this.#content_obj);
         return stringify ? JSON.stringify(keys) : keys;
     }
+}
+
+export class EasyTSDB {
+
 }
 
 /** 
@@ -645,7 +757,6 @@ function writeFile(filename, data) {
 	}
 }
 
-
 function readFile(filename) {
 	const str_content = readFileSync({
 		path: filename,
@@ -672,7 +783,6 @@ function removeFile(filename) {
     }
 }
 
-
 function writeAsset(filename, data) {
 	const buffer = str2ab(data);
 	const file = openAssetsSync({ path: filename, flag: O_WRONLY | O_CREAT });
@@ -690,7 +800,6 @@ function writeAsset(filename, data) {
 
 	closeSync(file);
 }
-
 function readAsset(filename) {
 	// check if the file exists and get its size
 	const file_info = statSync({ path: filename });
@@ -725,7 +834,6 @@ function readAsset(filename) {
 	}
 	return null; // null if reading was unsuccessful
 }
-
 function saveJson(filename, json) {
 	writeFile(filename, JSON.stringify(json));
 }
@@ -740,7 +848,7 @@ function loadJson(filename) {
 	} return json;
 }
 
-export function ab2str(buffer) {
+function ab2str(buffer) {
 	return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }
 
@@ -807,4 +915,24 @@ export default EasyStorage;
  * - @add EasyFlashStorage, a file storage for operating heavy files with a simple JSON approach
  * - @upd getContents() depracated; use getAllKeys() instead
  * - @add removeFile() utility
+ * 1.X.X
+ * - EasyStorage:
+ * - @upd getAllKeys() -> getStorageSnapshot() to be more descriptive
+ * - EasyFlashStorage:
+ * - @add getAllValues() 
+ * - @add getStorageSnapshot()
+ * - @fix index file excluded from .size() and .count() methods as it should not be counted as a regular file
+ * - @add constructor(..., use_index = true). index is used by default. 
+ * 		benefit - quicker filename resolution. con - all the keys (without their content, sit in the memory). 
+ * 		now with use_index = false, the flash lib will solely rely on the flash storage and use of readdirSync
+ * - @upd getKey() making sure that retrieved file is in the index, otherwise - update it 
+ * - ...
+ * - @add EasyTSDB
+ */
+
+/**
+ * TESTS:
+ * - Balance: 
+ * 		Index VS readdir = 3ms vs 9ms per 1000 files
+ * 		Creation of 1000 files takes: 27 seconds (!)
  */
