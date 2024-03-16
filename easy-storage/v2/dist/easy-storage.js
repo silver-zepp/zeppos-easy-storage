@@ -1,4 +1,4 @@
-/** @about Easy Storage 1.6.0 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
+/** @about Easy Storage 1.6.1 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
 import {
   statSync, readSync, readFileSync, writeFileSync, closeSync, openAssetsSync, 
   mkdirSync, openSync, writeSync, rmSync, readdirSync,
@@ -213,8 +213,7 @@ class EasyStorage {
  * to the filesystem. It offers a more scalable storage option while maintaining a minimalistic API, making it
  * suitable for applications with heavier data requirements.
  * */
-export class EasyFlashStorage {
-  // @add 1.4.0
+export class EasyFlashStorage { // @add 1.4.0
   #directory;
 
   /**
@@ -697,8 +696,7 @@ export class Storage {
  * data flushes to disk upon reaching RAM capacity limits. Designed for applications requiring efficient time-series
  * data management with options for custom aggregation and querying over specific time ranges.
  */
-export class EasyTSDB {
-  // @add 1.6.0
+export class EasyTSDB { // @add 1.6.0
   #data_in_ram = {}; // data storage in RAM that flushes to disk on overflow
   #query_cache = {};
   #index = {}; // map
@@ -1998,4 +1996,6 @@ export default EasyStorage;
  * - @add listDirectory() and makeDirectory()
  * - Other: 	--------------------------------------------------------------
  * - @add class EasyTSDB, the time-series database
+ *  1.6.1
+ * - @upd docs
  */

@@ -16,7 +16,7 @@
 `npm i @silver-zepp/easy-storage`
 
 ## Navigation
-#### [[ 📁 Download examples ]](../example-apps/) 
+#### [[ 📁 Download examples ]](https://github.com/silver-zepp/zeppos-easy-storage) 
 #### [[ 📝 API Reference ]](#apireference)
 #### [[ ⬅️ Back to Index ]](../README.md)
 

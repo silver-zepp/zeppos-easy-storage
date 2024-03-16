@@ -1,1 +1,0 @@
-Note: same samples but different entry points. If you know how to change them yourself - you can use just one example. Will have to add multiple pages later.
