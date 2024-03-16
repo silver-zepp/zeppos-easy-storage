@@ -5,7 +5,7 @@ The `EasyStorage` suite is a handy set of tools for `ZeppOS` applications. It in
 
 Alongside these storage solutions, we have `EasyTSDB` (time-series database). It’s a special part of the `EasyStorage` suite that’s all about managing time-series data. Just like `InfluxDB`, `EasyTSDB` is great at storing, retrieving, and analyzing time-series data. It uses a mix of `RAM` and filesystem storage to manage data effectively, and can handle data flushes to disk when `RAM` gets full. It’s perfect for applications that need to manage time-series data effectively, and it supports custom aggregation and querying over specific time ranges.
 
-<img src="./assets/easy-tsdb-hr-example.gif" width="600px">
+<img src="./assets/easy-tsdb-hr-example.gif" width="100%">
 
 ## Installation
 To install the library, run the following command from the root of your project:
