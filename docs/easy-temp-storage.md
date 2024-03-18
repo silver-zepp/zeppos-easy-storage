@@ -8,6 +8,7 @@
 
 ## Navigation
 #### [[ 📁 Download examples ]](../example-apps/) 
+#### [[ 📐 Class Map ]](#map)
 #### [[ 📝 API Reference ]](#apireference)
 #### [[ ⬅️ Back to Index ]](../README.md)
 
@@ -20,8 +21,16 @@ temp.setKey("session", { token: "abc123" });
 console.log(temp.getKey("session"));
 ```
 
-# 📝 EasyTempStorage API Reference  <a id="apireference"></a>
+# 📐 EasyTempStorage Class Map  <a id="map"></a>
+- `setKey(key, value)`: Temporarily stores a value for a key.
+- `getKey(key, defaultValue)`: Retrieves a value of a key.
+- `hasKey(key)`: Checks existence of a key.
+- `removeKey(key)`: Deletes a key and its value.
+- `deleteAll()`: Clears all keys and values.
+- `printAllKeys()`: Displays all keys and values.
+- `getAllKeys(stringify)`: Lists all keys in temporary storage.
 
+# 📝 EasyTempStorage API Reference  <a id="apireference"></a>
 ### `constructor()`
 Initializes the temporary storage instance.
 

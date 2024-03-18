@@ -8,6 +8,7 @@
 
 ## Navigation
 #### [[ 📁 Download examples ]](../example-apps/) 
+#### [[ 📐 Class Map ]](#map)
 #### [[ 📝 API Reference ]](#apireference)
 #### [[ ⬅️ Back to Index ]](../README.md)
 
@@ -19,8 +20,18 @@ Storage.WriteFile("log.txt", "log entry example");
 console.log(Storage.ReadFile("log.txt"));
 ```
 
-# 📝 EasyStorage API Reference  <a id="apireference"></a>
+# 📐 Storage Utility Class Map  <a id="map"></a>
+- `WriteJson(filename,json)` : Writes a JSON object to a file.
+- `ReadJson(filename)`: Reads a JSON object from a file.
+- `WriteFile(filename, data)`: Writes data to a file.
+- `ReadFile(filename)`: Reads data from a file.
+- `RemoveFile(filename)`: Deletes a file.
+- `WriteAsset(filename, data)`: Writes data to an asset file.
+- `ReadAsset(filename)`: Reads data from an asset file.
+- `MakeDirectory(dirname)`: Creates a new directory.
+- `ListDirectory(dirname)`: Lists contents of a directory.
 
+# 📝 EasyStorage API Reference  <a id="apireference"></a>
 ### `WriteJson(filename, json)`
 Writes a JSON object to a specified file.
 

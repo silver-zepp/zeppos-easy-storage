@@ -71,6 +71,63 @@ Storage.WriteFile("log.txt", "log entry example");
 console.log(Storage.ReadFile("log.txt"));
 ```
 
+# 📐 Library Map
+### EasyStorage
+- `setKey(key, value)`: Stores or updates a value for a key.
+- `getKey(key, defaultValue)`: Retrieves the value of a key.
+- `hasKey(key)`: Checks existence of a key.
+- `removeKey(key)`: Deletes a key and its associated value.
+- `saveAll()`: Forces saving all key-value pairs to the file.
+- `deleteAll()`: Deletes all keys and values.
+- `printContents()`: Displays all storage contents.
+- `getStorageSnapshot(stringify)`: Returns storage contents as a string or object.
+- `SetAutosaveEnable(bool)`: Enables or disables autosave.
+- `SetStorageFilename(filename)`: Changes the storage file name.
+- `GetStorageFilename()`: Returns the current storage filename.
+
+### EasyTSDB (time-series database)
+- `writePoint(measurement, value, timestamp)`: Writes a data point.
+- `query(start_time, end_time, aggregation_type, custom_aggregator)`: Queries data with aggregation.
+- `retrieveDataSeries(start_time, end_time)`: Retrieves raw data points.
+- `purge(older_than)`: Removes data points older than a specified timestamp.
+- `databaseClear(consent)`: Clears all database data.
+- `databaseClose()`: Closes the database, flushing data to disk.
+- `databaseBackup(backup_path, include_index)`: Backups the database.
+- `databaseRestore(consent, backup_path, recalculate_index)`: Restores the database from a backup.
+
+### EasyFlashStorage
+- `setKey(key, value)`: Stores or updates a value for a key, saving it to a file.
+- `getKey(key)`: Retrieves the value of a key from a file.
+- `removeKey(key)`: Deletes a file associated with a key.
+- `hasKey(key)`: Checks for the existence of a file for a key.
+- `dataSize(key, unit)`: Calculates the size of a file for a key.
+- `size(unit)`: Calculates the total size of all storage files.
+- `getAllKeys(stringify)`: Lists all keys in storage.
+- `getAllValues(stringify)`: Lists all values in storage.
+- `getStorageSnapshot(stringify)`: Returns all storage contents as a string or object.
+- `deleteAll()`: Deletes all keys and values, removing associated files.
+- `printAllKeys()`: Displays all keys and their values.
+
+### EasyTempStorage
+- `setKey(key, value)`: Temporarily stores a value for a key.
+- `getKey(key, defaultValue)`: Retrieves a value of a key.
+- `hasKey(key)`: Checks existence of a key.
+- `removeKey(key)`: Deletes a key and its value.
+- `deleteAll()`: Clears all keys and values.
+- `printAllKeys()`: Displays all keys and values.
+- `getAllKeys(stringify)`: Lists all keys in temporary storage.
+
+### Storage (Utility Class)
+- `WriteJson(filename,json)` : Writes a JSON object to a file.
+- `ReadJson(filename)`: Reads a JSON object from a file.
+- `WriteFile(filename, data)`: Writes data to a file.
+- `ReadFile(filename)`: Reads data from a file.
+- `RemoveFile(filename)`: Deletes a file.
+- `WriteAsset(filename, data)`: Writes data to an asset file.
+- `ReadAsset(filename)`: Reads data from an asset file.
+- `MakeDirectory(dirname)`: Creates a new directory.
+- `ListDirectory(dirname)`: Lists contents of a directory.
+
 # 📝 EasyStorage API Reference
 ### 1. [EasyStorage API🔗](./docs/easy-storage.md)
 ### 2. [EasyTSDB API🔗](./docs/easy-tsdb.md)

@@ -8,6 +8,7 @@
 
 ## Navigation
 #### [[ 📁 Download examples ]](../example-apps/) 
+#### [[ 📐 Class Map ]](#map)
 #### [[ 📝 API Reference ]](#apireference)
 #### [[ ⬅️ Back to Index ]](../README.md)
 
@@ -20,8 +21,20 @@ flash.setKey("config", { theme: "dark", notifications: true, ... });
 console.log(flash.getKey("config"));
 ```
 
-# 📝 EasyFlashStorage API Reference  <a id="apireference"></a>
+# 📐 EasyFlashStorage Class Map  <a id="map"></a>
+- `setKey(key, value)`: Stores or updates a value for a key, saving it to a file.
+- `getKey(key)`: Retrieves the value of a key from a file.
+- `removeKey(key)`: Deletes a file associated with a key.
+- `hasKey(key)`: Checks for the existence of a file for a key.
+- `dataSize(key, unit)`: Calculates the size of a file for a key.
+- `size(unit)`: Calculates the total size of all storage files.
+- `getAllKeys(stringify)`: Lists all keys in storage.
+- `getAllValues(stringify)`: Lists all values in storage.
+- `getStorageSnapshot(stringify)`: Returns all storage contents as a string or object.
+- `deleteAll()`: Deletes all keys and values, removing associated files.
+- `printAllKeys()`: Displays all keys and their values.
 
+# 📝 EasyFlashStorage API Reference  <a id="apireference"></a>
 ### `constructor(directory = "easy_flash_storage")`
 
 Initializes the storage with a specified directory.

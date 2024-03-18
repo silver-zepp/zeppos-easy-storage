@@ -1,4 +1,4 @@
-/** @about Easy Storage 1.6.1 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
+/** @about Easy Storage 1.6.3 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
 import {
   statSync, readSync, readFileSync, writeFileSync, closeSync, openAssetsSync, 
   mkdirSync, openSync, writeSync, rmSync, readdirSync,
@@ -224,7 +224,7 @@ export class EasyFlashStorage { // @add 1.4.0
    * const storage = new EasyFlashStorage('my_custom_directory');
    * ```
    */
-  constructor(directory = "easy_flash_storage", use_index = true) {
+  constructor(directory = "easy_flash_storage") { // @rem 1.6.2
     this.#directory = directory;
     makeDirectory(this.#directory);
   }
@@ -1997,5 +1997,8 @@ export default EasyStorage;
  * - Other: 	--------------------------------------------------------------
  * - @add class EasyTSDB, the time-series database
  *  1.6.1
+ * - @upd docs
+ *  1.6.3
+ * - @rem EasyFlashStorage -> use_index
  * - @upd docs
  */

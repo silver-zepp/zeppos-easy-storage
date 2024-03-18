@@ -17,6 +17,8 @@
 
 ## Navigation
 #### [[ 📁 Download examples ]](../example-apps/) 
+#### [[ 📐 Class Map ]](#map)
+#### [[ 🏛️ Architecture ]](#architecture)
 #### [[ 📝 API Reference ]](#apireference)
 #### [[ ⬅️ Back to Index ]](../README.md)
 
@@ -74,8 +76,94 @@ db.databaseRestore('my_backup.json');
 - `trend`: Indicates the overall direction of data points over time (up, down, steady).
 - `custom`: User-specified, function passed to query as the fourth parameter.
 
-# 📝 EasyTSDB API Reference <a id="apireference"></a>
+# 📐 EasyTSDB Class Map  <a id="map"></a>
+- `writePoint(measurement, value, timestamp)`: Writes a data point.
+- `query(start_time, end_time, aggregation_type, custom_aggregator)`: Queries data with aggregation.
+- `retrieveDataSeries(start_time, end_time)`: Retrieves raw data points.
+- `purge(older_than)`: Removes data points older than a specified timestamp.
+- `databaseClear(consent)`: Clears all database data.
+- `databaseClose()`: Closes the database, flushing data to disk.
+- `databaseBackup(backup_path, include_index)`: Backups the database.
+- `databaseRestore(consent, backup_path, recalculate_index)`: Restores the database from a backup.
 
+# 🏛️ EasyTSDB Library Architecture <a id="architecture"></a>
+### 1. Index File Content Visualization
+```json
+{
+  "2024_03_15": {
+    "12": 1,    // hour 12 -> exists "true"
+    "13": {
+      "00": 1,
+      "15": 1   // minute 15 -> exists
+    }
+  }
+}
+```
+This structure allows for different granularity (hourly and minutely) depending on the `time_frame` setting. Where `1` indicates the existence of the entry file on disk.
+
+### 2. Folder Structure for Hourly and Minute Data Files
+    easy_timeseries_db/
+    ├── 2024_03_15_12.json (Hourly file containing data points within the 12th hour)
+    ├── 2024_03_15_12_30.json (Minute file containing data points for 12:30)
+    └── 2024_03_15_12_45.json (Minute file containing data points for 12:45)
+
+### 3. Data File Content Structure
+```json
+├── 2024_03_15_12.json
+[
+  {"m": "temperature", "v": 22.5, "t": 1647061200000},
+  {"m": "humidity", "v": 45, "t": 1647061200000},
+  {"m": "light", "v": 200, "t": 1647064800000},
+  {"m": "motion", "v": 1, "t": 1647068400000},
+  {"m": "energy_consumption", "v": 350, "t": 1647072000000}
+]
+```
+The choice to abbreviate `value` as `v`, `measurement` as `m`, and `timestamp` as `t` in the data structure was made with both storage efficiency and performance in mind. Shorter keys result in smaller file sizes, which translates to lower disk space usage. This is particularly important for embedded systems where storage is at a premium. Additionally, smaller data sizes mean faster read and write operations, as there is less data to serialize or deserialize when loading from or saving to disk.
+
+### 4. Backup Folder Structure Visualization
+    easy_tsdb_backups/
+    └── easy_tsdb_backup.json (Backup file containing a JSON of all data points and optionally the index)
+
+### 5. Caching and Lazy Loading
+    +-------------+      +-----------------+      +----------------+
+    |             |      |                 |      |                |
+    |  User Query +----->+  Query Caching  +----->+  Data on Disk  |
+    |             |      |                 |      |                |
+    +-------------+      +-----------------+      +----------------+
+                                |                        ^
+                                |                        |
+                                |     +------------+     |
+                                +---->+ Lazy  Load +-----+
+                                      +------------+
+
+`EasyTSDB` implements caching mechanisms for queries and lazy loading for data retrieval. Caching query results reduces the need to recompute aggregations or rerun queries if the underlying data has not changed, thereby speeding up repeated queries over the same time range. Lazy loading minimizes memory usage by loading data from disk only when it is needed for a query, rather than keeping all data in memory.
+
+### 6. Automated Data Management
+    +-------------+      +---------------------+      +--------------+
+    |             |      |                     |      |              |
+    | Data Writes +----->+  Automatic Indexing +----->+ Index on Disk|
+    |             |      |                     |      |              |
+    +-------------+      +---------------------+      +--------------+
+                                   |
+                                   |
+                                   v
+                         +---------------------+
+                         |                     |
+                         |  Autosave Mechanism |
+                         |                     |
+                         +----------+----------+
+                                    |
+                                    v
+                          +-------------------+
+                          |                   |
+                          |   Data Flush to   |
+                          |       Disk        |
+                          |                   |
+                          +-------------------+
+Features like autosaving and automatic index management reduce the manual overhead required to ensure data integrity and consistency. The library handles the complexities of managing the file system and index.
+
+
+# 📝 EasyTSDB API Reference <a id="apireference"></a>
 ### `constructor(options)`
 Initializes the EasyTSDB with customizable options.
 

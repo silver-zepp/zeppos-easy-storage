@@ -8,6 +8,7 @@
 
 ## Navigation
 #### [[ 📁 Download examples ]](../example-apps/) 
+#### [[ 📐 Class Map ]](#map)
 #### [[ 📝 API Reference ]](#apireference)
 #### [[ ⬅️ Back to Index ]](../README.md)
 
@@ -20,8 +21,20 @@ storage.setKey("name", "John Doe");
 console.log(storage.getKey("user")); // "John Doe"
 ```
 
-# 📝 EasyStorage API Reference  <a id="apireference"></a>
+# 📐 EasyStorage Class Map  <a id="map"></a>
+- `setKey(key, value)`: Stores or updates a value for a key.
+- `getKey(key, defaultValue)`: Retrieves the value of a key.
+- `hasKey(key)`: Checks existence of a key.
+- `removeKey(key)`: Deletes a key and its associated value.
+- `saveAll()`: Forces saving all key-value pairs to the file.
+- `deleteAll()`: Deletes all keys and values.
+- `printContents()`: Displays all storage contents.
+- `getStorageSnapshot(stringify)`: Returns storage contents as a string or object.
+- `SetAutosaveEnable(bool)`: Enables or disables autosave.
+- `SetStorageFilename(filename)`: Changes the storage file name.
+- `GetStorageFilename()`: Returns the current storage filename.
 
+# 📝 EasyStorage API Reference  <a id="apireference"></a>
 ### `setKey(key, value)`
 Sets a value for a specified key within the storage. If the key already exists, its value is updated.
 
