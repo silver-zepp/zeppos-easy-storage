@@ -1,4 +1,4 @@
-/** @about Easy Storage 1.6.3 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
+/** @about Easy Storage 1.6.4 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
 import {
   statSync, readSync, readFileSync, writeFileSync, closeSync, openAssetsSync, 
   mkdirSync, openSync, writeSync, rmSync, readdirSync,
@@ -2001,4 +2001,6 @@ export default EasyStorage;
  *  1.6.3
  * - @rem EasyFlashStorage -> use_index
  * - @upd docs
+ *  1.6.4
+ * - @upd npm docs
  */
