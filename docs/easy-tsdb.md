@@ -3,7 +3,7 @@
 ### Description
 `EasyTSDB` is a time-series database extension similar to `InfluxDB` optimized for efficient storage and retrieval of time-series data. It leverages a combination of RAM and filesystem storage to manage data efficiently, with capabilities to handle data flushes to disk upon reaching RAM capacity limits. Designed for applications requiring effective time-series data management, it supports custom aggregation and querying over specific time ranges.
 
-<img src="../assets/easy-tsdb-hr-example.gif" width="600px">
+<img src="../assets/easy-tsdb-hr-example.gif" width="100%">
 
 ### Features
 - Efficient Data Management: Utilizes both RAM and filesystem for data storage, ensuring fast access and persistence while managing memory usage effectively.
