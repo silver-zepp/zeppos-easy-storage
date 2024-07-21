@@ -1,13 +1,25 @@
 {
-    "name": "@silver-zepp/easy-storage",
-    "version": "1.6.4",
-    "description": "The Easy Storage library offers a suite of storage solutions designed for ZeppOS applications, providing a range of data persistence strategies to accommodate different data management needs.",
-    "main": "dist/easy-storage.js",
-    "types": "ts/easy-storage.d.ts",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "zeppos": true,
-    "author": "Silver, Zepp Health",
-    "license": "MIT"
-  }
+  "name": "@silver-zepp/easy-storage",
+  "version": "1.6.7",
+  "description": "The Easy Storage library offers a suite of storage solutions designed for ZeppOS applications, providing a range of data persistence strategies to accommodate different data management needs.",
+  "main": "dist/easy-storage.js",
+  "types": "ts/easy-storage.d.ts",
+  "zeppos": true,
+  "author": "Silver, Zepp Health",
+  "license": "MIT",
+  "keywords": [
+    "zeppos",
+    "Zepp OS",
+    "storage",
+    "easy-storage",
+    "data persistence",
+    "local storage",
+    "session storage",
+    "timeseries database",
+    "tsdb"
+  ],
+  "files": [
+    "dist/",
+    "ts/"
+  ]
+}

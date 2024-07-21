@@ -87,7 +87,7 @@ db.databaseRestore('my_backup.json');
 - `databaseRestore(consent, backup_path, recalculate_index)`: Restores the database from a backup.
 
 # 🏛️ EasyTSDB Library Architecture <a id="architecture"></a>
-### 1. Index File Content Visualization
+## 1. Index File Content Visualization
 ```json
 {
   "2024_03_15": {
