@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@silver-zepp/autogui": "^1.2.9",
-    "@silver-zepp/easy-storage": "^1.6.1",
-    "@silver-zepp/vis-log": "^1.0.8"
+    "@silver-zepp/easy-storage": "^2.0.0",
+    "@silver-zepp/vis-log": "^1.5.0"
   }
 }

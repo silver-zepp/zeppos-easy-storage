@@ -1,8 +1,8 @@
 {
-  "configVersion": "v2",
+  "configVersion": "v3",
   "app": {
     "appId": 22501,
-    "appName": "EasyStorage",
+    "appName": "EasyStorage (example)",
     "appType": "app",
     "version": {
       "code": 1,
@@ -25,58 +25,35 @@
     }
   },
   "targets": {
-    "bip-5": {
+    "default": {
       "module": {
         "page": {
           "pages": [
             "entry-page",
+            "test-pages/async-storage-test",
+            "test-pages/easy-storage-async",
             "test-pages/easy-flash-storage",
-            "test-pages/easy-storage",
             "test-pages/easy-tsdb-heartrate",
+            "test-pages/easy-tsdb-example",
             "test-pages/easy-tsdb-testcases"
           ]
         }
       },
       "platforms": [
         {
-          "name": "Bip-5",
-          "deviceSource": 8454401
-        }
-      ],
-      "designWidth": 320
-    },
-    "480x480-amazfit-balance": {
-      "module": {
-        "page": {
-          "pages": [
-            "entry-page",
-            "test-pages/easy-flash-storage",
-            "test-pages/easy-storage",
-            "test-pages/easy-tsdb-heartrate",
-            "test-pages/easy-tsdb-testcases"
-          ]
-        }
-      },
-      "platforms": [
-        {
-          "name": "Monaco",
-          "deviceSource": 8519936
+          "st": "r",
+          "dw": 480
         },
         {
-          "name": "MonacoWN",
-          "deviceSource": 8519937
-        },
-        {
-          "name": "MonacoW",
-          "deviceSource": 8519939
+          "st": "s",
+          "dw": 390
         }
-      ],
-      "designWidth": 480
+      ]
     }
   },
   "i18n": {
     "en-US": {
-      "appName": "EasyStorage"
+      "appName": "EasyStorage (example)"
     }
   },
   "defaultLanguage": "en-US"

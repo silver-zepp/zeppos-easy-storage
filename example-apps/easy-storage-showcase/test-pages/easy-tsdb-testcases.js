@@ -1,5 +1,5 @@
-import { EasyTSDB, Storage } from "../libs/easy-storage"; //"../libs/easy-storage"; @silver-zepp/easy-storage;
-import { timeIt, runTest, activateDefaultSettings } from "../libs/helpers";
+import { EasyTSDB, Storage } from "../../../easy-storage/v2"; //"@silver-zepp/easy-storage";
+import { timeIt, runTest, activateDefaultSettings } from "../helpers/required";
 import VisLog from "@silver-zepp/vis-log";
 
 const vis = new VisLog();

@@ -1,0 +1,2 @@
+/** @about Easy Storage 2.0.0 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
+export{Storage}from"./storage.js";export{AsyncStorage}from"./async-storage.js";export{EasyStorage}from"./easy-storage.js";export{EasyStorageAsync}from"./easy-storage-async.js";export{EasyTempStorage}from"./easy-temp-storage.js";export{EasyFlashStorage}from"./easy-flash-storage.js";export{EasyTSDB}from"./easy-tsdb.js";

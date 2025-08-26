@@ -1,8 +1,8 @@
 import { createWidget, widget } from "@zos/ui";
 import { px } from "@zos/utils";
-import { EasyTSDB, Storage } from "../libs/easy-storage";
+import { EasyTSDB, Storage } from "../../../easy-storage/v2"; //"@silver-zepp/easy-storage";
 import VisLog from "@silver-zepp/vis-log";
-import { activateDefaultSettings } from "../libs/helpers";
+import { activateDefaultSettings } from "../helpers/required";
 
 const vis = new VisLog();
 const db = new EasyTSDB({ directory: "heart_rate_data" });
@@ -28,7 +28,7 @@ const generateHeartRateData = () => {
   }
 };
 
-// init poly
+// init polyline
 const polyline = createWidget(widget.GRADKIENT_POLYLINE, {
   x: 0,
   y: px(230),
@@ -56,6 +56,8 @@ const displayHeartRateSeries = () => {
   vis.log(`Avg HR:    ${avg_hr_f}`);
   vis.log(`Max HR:    ${max_hr}`);
   vis.log(`Min HR:    ${min_hr}`);
+
+  if (trend === undefined) vis.warn("Data updated. Restart the App!");
   //vis.refresh();
 
   let hr_data = series.map((dp, index) => {
@@ -79,7 +81,7 @@ Page({
     activateDefaultSettings();
   },
   build() {
-    vis.updateSettings({ line_count: 5 });
+    vis.updateSettings({ line_count: 10, timeout_enabled: false });
 
     generateHeartRateData();
     displayHeartRateSeries();

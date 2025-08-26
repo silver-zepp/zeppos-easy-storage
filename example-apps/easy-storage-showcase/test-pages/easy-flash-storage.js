@@ -1,6 +1,6 @@
 import VisLog from "@silver-zepp/vis-log";
-import {EasyFlashStorage} from "../libs/easy-storage" //"../libs/easy-storage"; @silver-zepp/easy-storage;
-import { activateDefaultSettings, timeIt } from "../libs/helpers";
+import { EasyFlashStorage } from "../../../easy-storage/v2"; // "@silver-zepp/easy-storage"
+import { activateDefaultSettings, timeIt } from "../helpers/required";
 
 
 const vis = new VisLog();
@@ -9,7 +9,7 @@ const flash = new EasyFlashStorage();
 Page({
     onInit(){
       activateDefaultSettings();
-      vis.updateSettings({ line_count: 10 });
+      vis.updateSettings({ line_count: 10, timeout_enabled: false });
     },
     build() {
         //test2();
@@ -78,6 +78,8 @@ function test2_indexVsDirect(){
 }
 
 function test1(){
+  const start_time = Date.now();
+
   vis.log("Starting!");
   // test setKey
   flash.setKey('key1', 'value1');
@@ -116,4 +118,6 @@ function test1(){
 
   // test printContents
   flash.printAllKeys(); // should print nothing
+
+  console.log(`Exec time ${Date.now() - start_time}ms`);
 }
