@@ -14,7 +14,7 @@
 
 ## Example
 ```js
-import EasyStorage from "@silver-zepp/easy-storage";
+import { EasyStorage } from "@silver-zepp/easy-storage";
 const storage = new EasyStorage();
 
 storage.setKey("name", "John Doe");
