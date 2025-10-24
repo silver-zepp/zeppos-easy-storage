@@ -53,6 +53,8 @@ function nd_streamJsonWrite(file, data, cb) {
   asyncQueue.startOperation();
 
   setTimeout(() => {
+    if (Array.isArray(data)) { data = { __root_arr: data }; }
+
     let fd;
     let arr_data = {};
     let metadata = { type: 'meta' };
@@ -210,7 +212,7 @@ function nd_parseJsonAsync(lines, cb) {
 
     idx < lines.length ? setTimeout(parseSlice, 6) 
         : (debugLog(3, `[ASYNC] Parse complete: ${lines.length} lines`),
-        cb && cb(null, res));
+        cb && cb(null, res.__root_arr || res));
   })();
 }
 
