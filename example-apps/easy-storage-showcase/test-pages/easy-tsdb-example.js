@@ -1,6 +1,6 @@
 /** @about Simple EasyTSDB example */
 
-import { EasyTSDB } from "../../../easy-storage/v2"; //"@silver-zepp/easy-storage";
+import { EasyTSDB } from "../../../easy-storage/v2/src/easy-tsdb"; //"@silver-zepp/easy-storage";
 const db = new EasyTSDB();
 
 class Example {
@@ -10,9 +10,6 @@ class Example {
     db.writePoint("hr", 77.7);
     db.writePoint("hr", 55.5);
     db.writePoint("hr", 99.9);
-
-    // manually save the database
-    db.flush();
 
     const start_time = Date.now() - 60 * 60 * 1000; // 1 hour ago
     const end_time = Date.now();

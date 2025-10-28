@@ -1,4 +1,4 @@
-/** @about Easy Storage 2.0.1 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
+/** @about Easy Storage 2.0.2 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
 
 // CORE
 export { Storage }          from './storage.js';
@@ -13,8 +13,10 @@ export { EasyTSDB }         from './easy-tsdb.js';
 
 /**
  * @changelog
+ * 2.0.2
+ * - @upd EasyTSDB: db.retrieveDataSeries() no longer requires db.flush()
  * 2.0.1
- * - @fix top level array handling
+ * - @fix AsyncStorage: top level array handling
  * 2.0.0
  * - @add AsyncStorage: async storage solution that doesn't render block the UI
  * - @add EasyStorageAsync: same as original but now uses async making UI interaction buttery smooth

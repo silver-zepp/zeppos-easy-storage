@@ -504,10 +504,28 @@ export class EasyTSDB { // @add 1.6.0
 
         const file_data_points = this.#getDataPointsFromFile(file_path);
         data_points = [...data_points, ...file_data_points];
+
+        if (this.#data_in_ram[file_path]) {
+          data_points = [...data_points, ...this.#data_in_ram[file_path]];
+        }
+      } else {
+        const file_path =
+          this.#user_options.time_frame === "hour"
+            ? `${this.#user_options.directory}/${data_key}_${hour}.json`
+            : `${this.#user_options.directory
+            }/${data_key}_${hour}_${minute}.json`;
+
+        if (this.#data_in_ram[file_path]) {
+          data_points = [...data_points, ...this.#data_in_ram[file_path]];
+        }
       }
 
       current = this.#incrementDate(current);
     }
+
+    const start_ts = new Date(start_time).getTime();
+    const end_ts = new Date(end_time).getTime();
+    data_points = data_points.filter(dp => dp.t >= start_ts && dp.t <= end_ts);
 
     return data_points;
   }
