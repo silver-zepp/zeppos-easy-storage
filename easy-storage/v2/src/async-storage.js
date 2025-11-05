@@ -5,6 +5,13 @@ import { openFile, readFile, removeFile, writeFile, str2ab, debugLog } from "./c
 
 let asyncQueue = null;
 
+const SPEED_MODES = {
+  BACKGROUND: { time_slice: 1, items_per_chunk: 5, delay: 6   },    // smooth UI (default)
+  NORMAL:     { time_slice: 3, items_per_chunk: 10, delay: 3  },
+  FAST:       { time_slice: 8, items_per_chunk: 25, delay: 1  },
+  FASTEST:    { time_slice: 15, items_per_chunk: 50, delay: 0 }     // max speed
+};
+
 // === tokenizer === //
 const TOK  = { T:'type', A:'__arrays', D:'data', M:'meta' };
 const REV  = { type:'T', __arrays:'A', data:'D', meta:'M' };
@@ -133,7 +140,7 @@ function finalizeBuild(fd, cb){
   if (cb) cb(null, true);
 }
 
-function nd_streamJsonRead(file, cb) {
+function nd_streamJsonRead(file, cb, speed_mode = 'BACKGROUND') {
   setTimeout(() => {
     try {
       const cont = readFile(file);
@@ -149,7 +156,7 @@ function nd_streamJsonRead(file, cb) {
         try {
           const first_line = nd_tokenDecode(JSON.parse(lines[0]));
           if (first_line.type === 'meta') {
-            nd_parseJsonAsync(lines, cb);
+            nd_parseJsonAsync(lines, cb, speed_mode);
             return;
           }
         } catch (e) {}
@@ -165,16 +172,18 @@ function nd_streamJsonRead(file, cb) {
   }, 0);
 }
 
-function nd_parseJsonAsync(lines, cb) {
+function nd_parseJsonAsync(lines, cb, speed_mode = 'BACKGROUND') {
   let idx = 0;
   const res = {};
   const arr_cache = {};
+
+  const cfg = SPEED_MODES[speed_mode] || SPEED_MODES.BACKGROUND;
 
   (function parseSlice() {
     const t0 = Date.now();
     let done = 0;
 
-    while (idx < lines.length && Date.now() - t0 < 1 && done < 5) {
+    while (idx < lines.length && Date.now() - t0 < cfg.time_slice && done < cfg.items_per_chunk) {
       try {
         const txt = lines[idx++].trim();
         if (!txt) continue;
@@ -210,7 +219,7 @@ function nd_parseJsonAsync(lines, cb) {
       }
     }
 
-    idx < lines.length ? setTimeout(parseSlice, 6) 
+    idx < lines.length ? setTimeout(parseSlice, cfg.delay) 
         : (debugLog(3, `[ASYNC] Parse complete: ${lines.length} lines`),
         cb && cb(null, res.__root_arr || res));
   })();
@@ -325,19 +334,20 @@ export class AsyncStorage {
    * Queued with other operations to maintain smooth app performance.
    * @param {string} filename - The filename to read from.
    * @param {Function} callback - Callback function (err, data) with the parsed JSON.
+   * @param {string} speed_mode - Speed mode: 'BACKGROUND', 'NORMAL', 'FAST', 'FASTEST'
    * ```
-   * // example: load config
+   * // example: load config using fastest speed
    * AsyncStorage.ReadJson('config.json', (err, config) => {
    *   if (!err) console.log('theme:', config.theme);
-   * });
+   * }, 'FASTEST');
    * ```
    */
-  static ReadJson(filename, callback) {
+  static ReadJson(filename, callback, speed_mode = 'BACKGROUND') {
     asyncQueue.enqueue((on_complete) => {
       nd_streamJsonRead(filename, (err, data) => {
         if (callback) callback(err, data);
         on_complete();
-      });
+      }, speed_mode);
     });
   }
 

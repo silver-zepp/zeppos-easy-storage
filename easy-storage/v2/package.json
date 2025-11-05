@@ -1,6 +1,6 @@
 {
   "name": "@silver-zepp/easy-storage",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "The Easy Storage library offers a suite of storage solutions designed for ZeppOS applications, providing a range of data persistence strategies to accommodate different data management needs.",
   "main": "dist/index.js",
   "types": "ts/index.d.ts",

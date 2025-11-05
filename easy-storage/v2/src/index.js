@@ -1,4 +1,4 @@
-/** @about Easy Storage 2.0.2 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
+/** @about Easy Storage 2.0.3 @min_zeppos 2.0 @author: Silver, Zepp Health. @license: MIT */
 
 // CORE
 export { Storage }          from './storage.js';
@@ -13,6 +13,8 @@ export { EasyTSDB }         from './easy-tsdb.js';
 
 /**
  * @changelog
+ * 2.0.3
+ * - @add speed mode with these selectors: 'BACKGROUND' (default), 'NORMAL', 'FAST', 'FASTEST'
  * 2.0.2
  * - @upd EasyTSDB: db.retrieveDataSeries() no longer requires db.flush()
  * 2.0.1

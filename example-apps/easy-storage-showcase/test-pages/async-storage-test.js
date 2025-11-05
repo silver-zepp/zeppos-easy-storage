@@ -1,6 +1,7 @@
 import * as hmUI from "@zos/ui";
 import { px } from "@zos/utils";
-import { Storage, AsyncStorage } from "../../../easy-storage/v2"; //"@silver-zepp/easy-storage";
+import { Storage } from "../../../easy-storage/v2/";
+import { AsyncStorage } from "../../../easy-storage/v2/src/async-storage"; //"@silver-zepp/easy-storage";
 import { activateDefaultSettings } from "../helpers/required"; // long screen time
 import { genTestPayload, rngStr, TEXTS } from "../helpers/async-storage-helpers";
 import { getDeviceInfo } from "@zos/device";
@@ -225,7 +226,7 @@ Page({
 
           cnt_text_widget?.setProperty(hmUI.prop.TEXT, `OP: ${cnt} LAG: ${last_stutter_duration}ms`);
         }
-      });
+      }); // }, 'FASTEST'); // <- increase the processing speed
     });
 
     this.cleanup(cnt - 5);
